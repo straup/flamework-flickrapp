@@ -17,9 +17,11 @@
 		"frob" => $frob,
 	);
 
-	# ensure this is signed...
+	$more = array(
+		'sign' => 1,
+	);
 
-	$rsp = flickr_api_call("flickr.auth.getToken", $args);
+	$rsp = flickr_api_call("flickr.auth.getToken", $args, $more);
 
 	if (! $rsp['ok']){
 		$GLOBALS['error']['missing_token'] = 1;
@@ -27,11 +29,11 @@
 		exit();
 	}
 
-	$rsp = $rsp['rsp'];
+	$auth = $rsp['rsp']['auth'];
 
-	# are these actually right...
-	$nsid = $rsp['id'];
-	$token = $rsp['token']['_content'];
+	$nsid = $auth['user']['nsid'];
+	$username = $auth['user']['username'];
+	$token = $auth['token']['_content'];
 
 	$flickr_user = flickr_users_get_by_nsid($nsid);
 
@@ -41,20 +43,33 @@
 
 	else {
 
-		$username = "fix me";
 		$password = random_string(32);
 
-		$user = users_create_user($array(
+		$user = users_create_user(array(
 			"username" => $username,
 			"email" => "{$username}@donotsend-flickr.com",
 			"password" => $password,
 		));
+
+		if (! $user){
+			$GLOBALS['error']['dberr_user'] = 1;
+			$GLOBALS['smarty']->display("page_auth_callback.txt");
+			exit();
+		}
 
 		$flickr_user = flickr_users_create_user(array(
 			'user_id' => $user['id'],
 			'nsid' => $nsid,
 			'auth_token' => $token,
 		));
+
+		if (! $flickr_user){
+			$GLOBALS['error']['dberr_flickruser'] = 1;
+			$GLOBALS['smarty']->display("page_auth_callback.txt");
+			exit();
+		}
+
+		# call user.getInfo and cache details like pathurl ?
 	}
 
 	# check for redir here...

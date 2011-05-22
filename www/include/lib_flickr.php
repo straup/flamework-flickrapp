@@ -30,7 +30,7 @@
 
 	#################################################################
 
-	function flickr_api_call($method, $args=array()){
+	function flickr_api_call($method, $args=array(), $more=array()){
 
 		$args['api_key'] = $GLOBALS['cfg']['flickr_apikey'];
 
@@ -38,7 +38,7 @@
 		$args['format'] = 'json';
 		$args['nojsoncallback'] = 1;
 
-		if (isset($args['auth_token'])){
+		if ((isset($args['auth_token'])) || (isset($more['sign']))){
 			$api_sig = _flickr_api_sign_args($args);
 			$args['api_sig'] = $api_sig;
 		}
