@@ -28,7 +28,10 @@
 	}
 
 	$rsp = $rsp['rsp'];
+
+	# are these actually right...
 	$nsid = $rsp['id'];
+	$token = $rsp['token']['_content'];
 
 	$flickr_user = flickr_users_get_by_nsid($nsid);
 
@@ -45,6 +48,12 @@
 			"username" => $username,
 			"email" => "{$username}@donotsend-flickr.com",
 			"password" => $password,
+		));
+
+		$flickr_user = flickr_users_create_user(array(
+			'user_id' => $user['id'],
+			'nsid' => $nsid,
+			'auth_token' => $token,
 		));
 	}
 
