@@ -1,16 +1,23 @@
 <?php
 
 	include("include/init.php");
+
 	loadlib("flickr");
 	loadlib("flickr_users");
 	loadlib("random");
 
 	$frob = get_str("frob");
+	$extra = get_str("extra");
 
 	if (! $frob){
 		$GLOBALS['error']['missing_frob'] = 1;
 		$GLOBALS['smarty']->display("page_auth_callback.txt");
 		exit();
+	}
+
+	if ($extra){
+		$_extra = urldecode($extra);
+		parse_str($_extra, $extra);
 	}
 
 	$args = array(
@@ -68,12 +75,11 @@
 			$GLOBALS['smarty']->display("page_auth_callback.txt");
 			exit();
 		}
-
-		# call user.getInfo and cache details like pathurl ?
 	}
 
-	# check for redir here...
+	$redir = (isset($extra['redir'])) ? $extra['redir'] : '';
 
-	login_do_login($user);
+	login_do_login($user, $redir);
 	exit();
+
 ?>

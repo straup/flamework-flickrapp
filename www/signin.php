@@ -3,14 +3,19 @@
 	include("include/init.php");
 	loadlib("flickr");
 
+	$redir = (get_str('redir')) ? get_str('redir') : '/';
+
 	if ($GLOBALS['cfg']['user']['id']){
-		header("location: {$url}");
+		header("location: {$redir}");
 		exit();
 	}
-	
-	$extra = array(
-		'crumb' => '',
-	);
+
+	if (! $GLOBALS['cfg']['enable_feature_signin']){
+		$GLOBALS['smarty']->display("page_signin_disabled.txt");
+		exit;
+	}
+
+	$extra = array();
 
 	if ($redir = get_str('redir')){
 		$extra['redir'] = $redir;
