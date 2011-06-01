@@ -24,6 +24,23 @@
 
 	#################################################################
 
+	function flickr_users_delete_user(&$user){
+
+		$enc_id = AddSlashes($user['id']);
+
+		$sql = "DELETE FROM FlickrUsers WHERE user_id='{$enc_id}'";
+		$rsp = db_write($sql);
+
+		if ($rsp['ok']){
+			$cache_key = "flickr_user_{$user['nsid']}";
+			cache_unset($cache_key);
+		}
+
+		return $rsp;
+	}
+
+	#################################################################
+
 	function flickr_users_get_by_nsid($nsid){
 
 		$cache_key = "flickr_user_{$user['nsid']}";
@@ -39,7 +56,10 @@
 		$rsp = db_fetch($sql);
 		$user = db_single($rsp);
 
-		cache_set($cache_key, $user, "cache locally");
+		if ($user){
+			cache_set($cache_key, $user, "cache locally");
+		}
+
 		return $user;
 	}
 
