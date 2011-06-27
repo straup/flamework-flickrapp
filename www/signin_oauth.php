@@ -18,7 +18,7 @@
 	}
 
 	if (! $GLOBALS['cfg']['crypto_oauth_cookie_secret'])){
-		$GLOBALS['smarty']->display("page_signin_oauth_error.txt");
+		$GLOBALS['smarty']->display("page_signin_oauth.txt");
 		exit();
 	}
 
@@ -36,7 +36,7 @@
 	$ok = oauth_get_auth_token($keys, 'http://www.flickr.com/services/oauth/request_token/', $more);
 
 	if (! $ok){
-		$GLOBALS['smarty']->display("page_signin_oauth_error.txt");
+		$GLOBALS['smarty']->display("page_signin_oauth.txt");
 		exit();
 	}
 
