@@ -30,7 +30,7 @@
 	);
 
 	$more = array(
-		'oauth_callback' => $GLOBALS['cfg']['abs_root_url'] . 'oauth/';
+		'oauth_callback' => $GLOBALS['cfg']['abs_root_url'] . 'auth/';
 	);
 
 	$ok = oauth_get_auth_token($keys, 'http://www.flickr.com/services/oauth/request_token/', $more);
