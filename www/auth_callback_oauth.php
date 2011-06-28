@@ -17,6 +17,7 @@
 	}
 
 	if (! $GLOBALS['cfg']['crypto_oauth_cookie_secret'])){
+		$GLOBALS['error']['oauth_missing_secret'] = 1;
 		$GLOBALS['smarty']->display("page_auth_callback_oauth.txt");
 		exit();
 	}
@@ -27,6 +28,7 @@
 	login_unset_cookie('o');
 
 	if (! $oauth_cookie){
+		$GLOBALS['error']['oauth_missing_cookie'] = 1;
 		$GLOBALS['smarty']->display("page_auth_callback_oauth.txt");
 		exit();
 	}
@@ -49,6 +51,7 @@
 	$ok = oauth_get_access_token($keys, 'http://www.flickr.com/services/oauth/access_token/', $_GET);
 
 	if (! $ok){
+		$GLOBALS['error']['oauth_access_token'] = 1;
 		$GLOBALS['smarty']->display("page_auth_callback_oauth.txt");
 		exit();
 	}
