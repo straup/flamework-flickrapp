@@ -17,7 +17,7 @@
 		exit();
 	}
 
-	if (! $GLOBALS['cfg']['crypto_oauth_cookie_secret'])){
+	if (! $GLOBALS['cfg']['crypto_oauth_cookie_secret']){
 		$GLOBALS['error']['oauth_missing_secret'] = 1;
 		$GLOBALS['smarty']->display("page_signin_oauth.txt");
 		exit();
@@ -31,12 +31,13 @@
 	);
 
 	$more = array(
-		'oauth_callback' => $GLOBALS['cfg']['abs_root_url'] . 'auth/';
+		# 'oauth_callback' => $GLOBALS['cfg']['abs_root_url'] . 'auth/',
+		'oauth_callback' => $GLOBALS['cfg']['abs_root_url'] . 'auth_callback_oauth.php',
 	);
 
-	$ok = oauth_get_auth_token($keys, 'http://www.flickr.com/services/oauth/request_token/', $more);
+	$rsp = oauth_get_auth_token($keys, 'http://www.flickr.com/services/oauth/request_token/', $more);
 
-	if (! $ok){
+	if (! $rsp['ok']){
 		$GLOBALS['error']['oauth_request_token'] = 1;
 		$GLOBALS['smarty']->display("page_signin_oauth.txt");
 		exit();
@@ -62,8 +63,8 @@
 	# so it's here mostly just as a reference. It may change.
 
 	$request = implode(":", array(
-		$keys['request_key'],
-		$keys['request_secret'],
+		$rsp['data']['oauth_token'],
+		$rsp['data']['oauth_token_secret'],
 	));
 
 	$request = crypto_encrypt($request, $GLOBALS['cfg']['crypto_oauth_cookie_secret']);

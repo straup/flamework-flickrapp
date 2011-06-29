@@ -16,7 +16,7 @@
 		exit();
 	}
 
-	if (! $GLOBALS['cfg']['crypto_oauth_cookie_secret'])){
+	if (! $GLOBALS['cfg']['crypto_oauth_cookie_secret']){
 		$GLOBALS['error']['oauth_missing_secret'] = 1;
 		$GLOBALS['smarty']->display("page_auth_callback_oauth.txt");
 		exit();
@@ -33,11 +33,19 @@
 		exit();
 	}
 
-	$request = crypto_decrypt($oauth_cookie, $GLOBALS['cfg']['crypto_cookie_secret']);
+	$request = crypto_decrypt($oauth_cookie, $GLOBALS['cfg']['crypto_oauth_cookie_secret']);
 	$request = explode(":", $request, 2);
 
-	# TODO:
-	# make sure that $_GET contains required parameters
+	#
+
+	$verifier = get_str('oauth_verifier');
+	$token = get_str('oauth_token');
+
+	if ((! $verifier) || (! $token)){
+		$GLOBALS['error']['oauth_missing_args'] = 1;
+		$GLOBALS['smarty']->display("page_auth_callback_oauth.txt");
+		exit();
+	}
 
 	# exchange the frob for a token
 
@@ -48,22 +56,45 @@
 		'request_secret' => $request[1],
 	);
 
-	$ok = oauth_get_access_token($keys, 'http://www.flickr.com/services/oauth/access_token/', $_GET);
+	$more = array(
+		'oauth_verifier' => $verifier,
+		'oauth_token' => $token,
+	);
 
-	if (! $ok){
+	$rsp = oauth_get_access_token($keys, 'http://www.flickr.com/services/oauth/access_token/', $more);
+
+	if (! $rsp['ok']){
 		$GLOBALS['error']['oauth_access_token'] = 1;
 		$GLOBALS['smarty']->display("page_auth_callback_oauth.txt");
 		exit();
 	}
 
-	# TODO:
-	# get user data here (keys, username, nsid)
-	# will require poking lib_oauth
+	$data = $rsp['data'];
+
+	$username = $data['username'];
+	$nsid = $data['user_nsid'];
 
 	$flickr_user = flickr_users_get_by_nsid($nsid);
 
 	if ($user_id = $flickr_user['user_id']){
+
 		$user = users_get_by_id($user_id);
+
+		if ((! $flickr_user['oauth_token']) || ($flickr_user['oauth_token'] != $keys['user_key'])){
+
+			$update = array(
+				'oauth_token' => $keys['user_key'],
+				'oauth_secret' => $keys['user_secret'],
+			);
+
+			$rsp = flickr_users_update_user($flickr_user, $update);
+
+			if (! $rsp['ok']){
+				$GLOBALS['error']['dberr_flickruser_update'] = 1;
+				$GLOBALS['smarty']->display("page_auth_callback_oauth.txt");
+				exit();
+			}
+		}
 	}
 
 	else if (! $GLOBALS['cfg']['enable_feature_signup']){
@@ -90,8 +121,8 @@
 		$flickr_user = flickr_users_create_user(array(
 			'user_id' => $user['id'],
 			'nsid' => $nsid,
-			'oauth_token' => $oauth_token,
-			'oauth_secret' => $oauth_secret,
+			'oauth_token' => $keys['user_key'],
+			'oauth_secret' => $keys['user_secret'],
 		));
 
 		if (! $flickr_user){

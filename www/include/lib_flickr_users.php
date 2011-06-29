@@ -19,20 +19,35 @@
 		$cache_key = "flickr_user_{$user['nsid']}";
 		cache_set($cache_key, $user, "cache locally");
 
+		$cache_key = "flickr_user_{$user['id']}";
+		cache_set($cache_key, $user, "cache locally");
+
 		return $user;
 	}
 
 	#################################################################
 
-	function flickr_users_delete_user(&$user){
+	function flickr_users_update_user(&$flickr_user, $update){
 
-		$enc_id = AddSlashes($user['id']);
+		$hash = array();
+		
+		foreach ($update as $k => $v){
+			$hash[$k] = AddSlashes($v);
+		}
 
-		$sql = "DELETE FROM FlickrUsers WHERE user_id='{$enc_id}'";
-		$rsp = db_write($sql);
+		$enc_id = AddSlashes($flickr_user['user_id']);
+		$where = "user_id='{$enc_id}'";
+
+		$rsp = db_update('FlickrUsers', $hash, $where);
 
 		if ($rsp['ok']){
-			$cache_key = "flickr_user_{$user['nsid']}";
+
+			$flickr_user = array_merge($flickr_user, $update);
+
+			$cache_key = "flickr_user_{$flickr_user['nsid']}";
+			cache_unset($cache_key);
+
+			$cache_key = "flickr_user_{$flickr_user['user_id']}";
 			cache_unset($cache_key);
 		}
 
@@ -43,7 +58,7 @@
 
 	function flickr_users_get_by_nsid($nsid){
 
-		$cache_key = "flickr_user_{$user['nsid']}";
+		$cache_key = "flickr_user_{$nsid}";
 		$cache = cache_get($cache_key);
 
 		if ($cache['ok']){
@@ -56,12 +71,32 @@
 		$rsp = db_fetch($sql);
 		$user = db_single($rsp);
 
-		if ($user){
-			cache_set($cache_key, $user, "cache locally");
-		}
-
+		cache_set($cache_key, $user, "cache locally");
 		return $user;
 	}
 
 	#################################################################
+
+	function flickr_users_get_by_user_id($user_id){
+
+		$cache_key = "flickr_user_{$user_id}";
+		$cache = cache_get($cache_key);
+
+		if ($cache['ok']){
+			return $cache['data'];
+		}
+
+		$enc_id = AddSlashes($user_id);
+
+		$sql = "SELECT * FROM FlickrUsers WHERE user_id='{$enc_id}'";
+
+		$rsp = db_fetch($sql);
+		$user = db_single($rsp);
+
+		cache_set($cache_key, $user, "cache locally");
+		return $user;
+	}
+
+	#################################################################
+
 ?>

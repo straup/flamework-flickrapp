@@ -234,10 +234,16 @@
 		$key_bucket['request_secret']	= $bits['oauth_token_secret'];
 
 		if ($key_bucket['request_key'] && $key_bucket['request_secret']){
-			return 1;
+
+			return array(
+				'ok' => 1,
+				'data' => $bits,
+			);
 		}
 
-		return 0;
+		return array(
+			'ok' => 0,
+		);
 	}
 
 	################################################################################################	
@@ -281,10 +287,16 @@
 		$key_bucket['user_secret']	= $bits['oauth_token_secret'];
 
 		if ($key_bucket['user_key'] && $key_bucket['user_secret']){
-			return 1;
+
+			return array(
+				'ok' => 1,
+				'data' => $bits,
+			);
 		}
 
-		return 0;
+		return array(
+			'ok' => 0,
+		);
 	}
 
 	################################################################################################
