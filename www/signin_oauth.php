@@ -6,8 +6,8 @@
 	$redir = (get_str('redir')) ? get_str('redir') : '/';
 
 	if ($GLOBALS['cfg']['user']['id']){
-#		header("location: {$redir}");
-#		exit();
+		header("location: {$redir}");
+		exit();
 	}
 
 	#
