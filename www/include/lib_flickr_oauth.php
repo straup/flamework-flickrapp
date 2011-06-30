@@ -3,14 +3,80 @@
 	# THIS IS STILL A WORK IN MOTION
 	# (20110630/straup)
 
+	# This uses lib_oauth for all the signing and building
+	# URL crap but uses Flamework's lib_http for actually
+	# talking to the network.
+	
 	loadlib("oauth");
 	loadlib("http");
 
-	$GLOBALS['cfg']['flickr_api_endpoint'] = 'http://api.flickr.com/services/rest';
+	#################################################################
+
+	$GLOBALS['cfg']['flickr_api_endpoint'] = 'http://api.flickr.com/services/rest/';
+	$GLOBALS['cfg']['flickr_oauth_endpoint'] = 'http://www.flickr.com/services/oauth/';
 
 	#################################################################
 
-	# token dance nonsense goes here...
+	function flickr_oauth_get_request_token(){
+
+		$keys = array(
+			'oauth_key' => $GLOBALS['cfg']['flickr_oauth_key'],
+			'oauth_secret' => $GLOBALS['cfg']['flickr_oauth_secret'],
+		);
+
+		$args = array(
+			# 'oauth_callback' => $GLOBALS['cfg']['abs_root_url'] . 'auth/',
+			'oauth_callback' => $GLOBALS['cfg']['abs_root_url'] . 'auth_callback_oauth.php',
+		);
+
+		$url = $GLOBALS['cfg']['flickr_oauth_endpoint'] . 'request_token/';
+
+		$url = oauth_sign_get($keys, $url, $args, 'GET');
+		$rsp = http_get($url);
+
+		if (! $rsp['ok']){
+			return $rsp;
+		}
+
+		$data = array();
+
+		$bits = explode("&", $rsp['body']);
+
+		foreach ($bits as $bit){
+			list($k, $v) = explode('=', $bit, 2);
+			$data[urldecode($k)] = urldecode($v);
+		}
+
+		return array(
+			'ok' => 1,
+			'data' => $data,
+		);
+	}
+
+	#################################################################
+
+	function flickr_oauth_get_auth_url(&$args, &$user_keys){
+
+		$keys = array(
+			'oauth_key' => $GLOBALS['cfg']['flickr_oauth_key'],
+			'oauth_secret' => $GLOBALS['cfg']['flickr_oauth_secret'],
+			'user_key' => $user_keys['oauth_token'],
+			'user_secret' => $user_keys['oauth_secret'],
+		);
+
+		$url = $GLOBALS['cfg']['flickr_oauth_endpoint'] . 'authorize/';
+		$url = oauth_sign_get($keys, $url, $args, 'GET');
+
+		return $url;
+	}
+
+	#################################################################
+
+	# finish token dance nonsense here...
+
+	function flickr_oauth_get_access_token(){
+
+	}
 
 	#################################################################
 

@@ -1,13 +1,13 @@
 <?php
 
 	include("include/init.php");
-	loadlib("oauth");
+	loadlib("flickr_oauth");
 
 	$redir = (get_str('redir')) ? get_str('redir') : '/';
 
 	if ($GLOBALS['cfg']['user']['id']){
-		header("location: {$redir}");
-		exit();
+#		header("location: {$redir}");
+#		exit();
 	}
 
 	#
@@ -25,17 +25,7 @@
 
 	#
 
-	$keys = array(
-		'oauth_key' => $GLOBALS['cfg']['flickr_oauth_key'],
-		'oauth_secret' => $GLOBALS['cfg']['flickr_oauth_secret'],
-	);
-
-	$more = array(
-		# 'oauth_callback' => $GLOBALS['cfg']['abs_root_url'] . 'auth/',
-		'oauth_callback' => $GLOBALS['cfg']['abs_root_url'] . 'auth_callback_oauth.php',
-	);
-
-	$rsp = oauth_get_auth_token($keys, 'http://www.flickr.com/services/oauth/request_token/', $more);
+	$rsp = flickr_oauth_get_request_token();
 
 	if (! $rsp['ok']){
 		$GLOBALS['error']['oauth_request_token'] = 1;
@@ -45,33 +35,37 @@
 
 	#
 
-	$extra = array();
-
-	if ($redir = get_str('redir')){
-		$extra[] = "redir=" . urlencode($redir);
-	}
-
-	$more = array(
-		'perms' => 'read',
-	);
-
-	if (count($extra)){
-		$more['extra'] = implode("&", $extra);
-	}
+	$user_keys = $rsp['data'];
 
 	# This is kind of dirty and maybe crazy but it also works
 	# so it's here mostly just as a reference. It may change.
 
 	$request = implode(":", array(
-		$rsp['data']['oauth_token'],
-		$rsp['data']['oauth_token_secret'],
+		$user_keys['oauth_token'],
+		$user_keys['oauth_token_secret'],
 	));
 
 	$request = crypto_encrypt($request, $GLOBALS['cfg']['crypto_oauth_cookie_secret']);
 
 	#
 
-	$url = oauth_get_auth_url($keys, 'http://www.flickr.com/services/oauth/authorize/', $more);
+	$args = array(
+		'perms' => 'read',
+	);
+
+	$extra = array();
+
+	if ($redir = get_str('redir')){
+		$extra[] = "redir=" . urlencode($redir);
+	}
+
+	if (count($extra)){
+		$args['extra'] = implode("&", $extra);
+	}
+
+	#
+
+	$url = flickr_oauth_get_auth_url($args, $user_keys);
 
 	#
 
