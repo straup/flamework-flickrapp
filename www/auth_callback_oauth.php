@@ -1,8 +1,10 @@
 <?php
 
 	include("include/init.php");
-	loadlib("oauth");
+
 	loadlib("flickr_users");
+	loadlib("flickr_oauth");
+	loadlib("random");
 
 	if ($GLOBALS['cfg']['user']['id']){
 		header("location: {$GLOBALS['cfg']['abs_root_url']}");
@@ -49,19 +51,17 @@
 
 	# exchange the frob for a token
 
-	$keys = array(
-		'oauth_key' => $GLOBALS['cfg']['flickr_oauth_key'],
-		'oauth_secret' => $GLOBALS['cfg']['flickr_oauth_secret'],
-		'request_key' => $request[0],
-		'request_secret' => $request[1],
+	$user_keys = array(
+		'oauth_token' => $request[0],
+		'oauth_secret' => $request[1],
 	);
 
-	$more = array(
+	$args = array(
 		'oauth_verifier' => $verifier,
 		'oauth_token' => $token,
 	);
 
-	$rsp = oauth_get_access_token($keys, 'http://www.flickr.com/services/oauth/access_token/', $more);
+	$rsp = flickr_oauth_get_access_token($args, $user_keys);
 
 	if (! $rsp['ok']){
 		$GLOBALS['error']['oauth_access_token'] = 1;

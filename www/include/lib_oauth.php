@@ -68,12 +68,12 @@
 		#
 
 		$url_parsed = parse_url($url);
-
 		if (isset($url_parsed['query'])){
 			parse_str($url_parsed['query'], $url_params);
 			$params = array_merge($params, $url_params);
 		}
 		
+
 		#
 		# create the request thingy
 		#
@@ -99,7 +99,9 @@
 	function oauth_sign_get($key_bucket, $url, $params=array(), $method="GET"){
 
 		$params = oauth_sign($key_bucket, $url, $params, $method);
+
 		$url = oauth_normalize_http_url($url) . "?" . oauth_to_postdata($params);
+
 		return $url;
 	}
 
@@ -155,7 +157,6 @@
 	################################################################################################	
 
 	function oauth_get_signable_parameters($params){
-
 		$sorted = $params;
 		ksort($sorted);
 
@@ -164,14 +165,12 @@
 			if ($k == "oauth_signature") continue;
 			$total[] = rawurlencode($k) . "=" . rawurlencode($v);
 		}
-
 		return implode("&", $total);
 	}
 
 	################################################################################################	
 
 	function oauth_to_postdata($params){
-
 		$total = array();
 		foreach ($params as $k => $v) {
 			$total[] = rawurlencode($k) . "=" . rawurlencode($v);
@@ -234,16 +233,10 @@
 		$key_bucket['request_secret']	= $bits['oauth_token_secret'];
 
 		if ($key_bucket['request_key'] && $key_bucket['request_secret']){
-
-			return array(
-				'ok' => 1,
-				'data' => $bits,
-			);
+			return 1;
 		}
 
-		return array(
-			'ok' => 0,
-		);
+		return 0;
 	}
 
 	################################################################################################	
@@ -266,11 +259,7 @@
 
 	function oauth_get_auth_url(&$key_bucket, $url, $params=array()){
 
-		$key_bucket['user_key']		= $key_bucket['request_key'];
-		$key_bucket['user_secret']	= $key_bucket['request_secret'];
-
-		$url = oauth_sign_get($key_bucket, $url, $params);
-		return $url;
+		return $url . "?oauth_token=$key_bucket[request_key]";
 	}
 
 	################################################################################################
@@ -287,21 +276,35 @@
 		$key_bucket['user_secret']	= $bits['oauth_token_secret'];
 
 		if ($key_bucket['user_key'] && $key_bucket['user_secret']){
-
-			return array(
-				'ok' => 1,
-				'data' => $bits,
-			);
+			return 1;
 		}
 
-		return array(
-			'ok' => 0,
-		);
+		return 0;
 	}
 
 	################################################################################################
 	
 	function oauth_http_request($url, $method="GET", $postdata=null){
+
+		#
+		# use fopen wrappers?
+		#
+
+		if ($GLOBALS['oauth_use_fopen_wrappers'] && $method == 'GET'){
+
+			$response = implode("", file($url));
+
+			$GLOBALS['oauth_last_request'] = array(
+				'request'	=> array(
+					'url'		=> $url,
+					'method'	=> $method,
+				),
+				'body'		=> $response,
+			);
+
+			return $response;
+		}
+
 
 		#
 		# use curl
