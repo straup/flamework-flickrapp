@@ -4,9 +4,9 @@
 
 <p class="error">
 {if $error.oauth_missing_secret}
-
+This website is not properly configured for signing you in using your Flickr credentials. It's not your fault but it is currently unsafe to proceed.
 {elseif $error.oauth_request_token}
-There was a problem getting a <code>request token</code> from Flickr!
+There was a problem getting the required auth-y bits (specifically a <code>request token</code>) from Flickr!
 {else}
 Ack! The INVISIBLE ERROR CAT hisses at you...
 {/if}

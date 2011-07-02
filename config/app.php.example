@@ -1,0 +1,19 @@
+<?php
+
+	# Old skool Flickr API stuff
+
+	$GLOBALS['cfg']['flickr_api_key'] = '';
+	$GLOBALS['cfg']['flickr_api_secret'] = '';
+
+	# Flickr OAuth stuff
+
+	$GLOBALS['cfg']['flickr_oauth_key'] = '';
+	$GLOBALS['cfg']['flickr_oauth_secret'] = '';
+
+	# (see notes in www/sign_oauth.php)
+	$GLOBALS['cfg']['crypto_oauth_cookie_secret'] = '';
+
+	# Shared stuff
+
+	$GLOBALS['cfg']['flickr_api_perms'] = 'read';
+?>

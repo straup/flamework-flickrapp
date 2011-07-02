@@ -21,7 +21,9 @@
 		$extra['redir'] = $redir;
 	}
 
-	$url = flickr_auth_url("read", $extra);
+	$perms = $GLOBALS['cfg']['flickr_api_perms'];
+
+	$url = flickr_auth_url($perms, $extra);
 
 	header("location: {$url}");
 	exit();
