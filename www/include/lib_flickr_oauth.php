@@ -1,8 +1,5 @@
 <?php
 
-	# THIS IS STILL A WORK IN MOTION
-	# (20110630/straup)
-
 	# This uses lib_oauth for all the signing and building
 	# URL crap but uses Flamework's lib_http for actually
 	# talking to the network.
@@ -17,16 +14,19 @@
 
 	#################################################################
 
-	function flickr_oauth_get_request_token(){
+	function flickr_oauth_get_request_token($callback_url=''){
 
 		$keys = array(
 			'oauth_key' => $GLOBALS['cfg']['flickr_oauth_key'],
 			'oauth_secret' => $GLOBALS['cfg']['flickr_oauth_secret'],
 		);
 
+		if (! $callback_url){
+			$callback_url =  $GLOBALS['cfg']['abs_root_url'] . 'auth_callback_oauth.php';
+		}
+
 		$args = array(
-			# 'oauth_callback' => $GLOBALS['cfg']['abs_root_url'] . 'auth/',
-			'oauth_callback' => $GLOBALS['cfg']['abs_root_url'] . 'auth_callback_oauth.php',
+			'oauth_callback' => $callback_url
 		);
 
 		$url = $GLOBALS['cfg']['flickr_oauth_endpoint'] . 'request_token/';
@@ -39,8 +39,6 @@
 		}
 
 		$data = flickr_oauth_rsp_to_hash($rsp['body']);
-
-		# check $data here
 
 		return array(
 			'ok' => 1,
@@ -87,8 +85,6 @@
 
 		$data = flickr_oauth_rsp_to_hash($rsp['body']);
 
-		# check $data here
-
 		return array(
 			'ok' => 1,
 			'data' => $data,
@@ -97,18 +93,16 @@
 
 	#################################################################
 
-	function flickr_oauth_api_call($method, $args, $user_keys=array()){
+	function flickr_oauth_api_call($method, $args, $more=array()){
 
 		$keys = array(
 			'oauth_key' => $GLOBALS['cfg']['flickr_oauth_key'],
 			'oauth_secret' => $GLOBALS['cfg']['flickr_oauth_secret'],
 		);
 
-		# what oh what to call these stupid things....
-
-		if (count($user_keys)){
-			$keys['user_key'] = $user_keys['oauth_token'];
-			$keys['user_secret'] = $user_keys['oauth_secret'];
+		if (isset($more['oauth_token'])){
+			$keys['user_key'] = $more['oauth_token'];
+			$keys['user_secret'] = $more['oauth_secret'];
 		}
 
 		$args['method'] = $method;
@@ -118,6 +112,8 @@
 		# Just keep things simple and assume we're always doing POSTs
 
 		$url = oauth_sign_get($keys, $GLOBALS['cfg']['flickr_api_endpoint'], $args, 'POST');
+		dumper($url);
+
 		list($url, $postdata) = explode('?', $url, 2);
 
 		$rsp = http_post($url, $postdata);
