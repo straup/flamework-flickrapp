@@ -24,7 +24,7 @@
 
 	if (! $GLOBALS['cfg']['crypto_oauth_cookie_secret']){
 		$GLOBALS['error']['oauth_missing_secret'] = 1;
-		$GLOBALS['smarty']->display("page_auth_callback_oauth.txt");
+		$GLOBALS['smarty']->display("page_auth_callback_flickr_oauth.txt");
 		exit();
 	}
 
@@ -37,7 +37,7 @@
 
 	if (! $oauth_cookie){
 		$GLOBALS['error']['oauth_missing_cookie'] = 1;
-		$GLOBALS['smarty']->display("page_auth_callback_oauth.txt");
+		$GLOBALS['smarty']->display("page_auth_callback_flickr_oauth.txt");
 		exit();
 	}
 
@@ -52,7 +52,7 @@
 
 	if ((! $verifier) || (! $token)){
 		$GLOBALS['error']['oauth_missing_args'] = 1;
-		$GLOBALS['smarty']->display("page_auth_callback_oauth.txt");
+		$GLOBALS['smarty']->display("page_auth_callback_flickr_oauth.txt");
 		exit();
 	}
 
@@ -76,7 +76,7 @@
 
 	if (! $rsp['ok']){
 		$GLOBALS['error']['oauth_access_token'] = 1;
-		$GLOBALS['smarty']->display("page_auth_callback_oauth.txt");
+		$GLOBALS['smarty']->display("page_auth_callback_flickr_oauth.txt");
 		exit();
 	}
 
@@ -112,7 +112,7 @@
 
 			if (! $rsp['ok']){
 				$GLOBALS['error']['dberr_flickruser_update'] = 1;
-				$GLOBALS['smarty']->display("page_auth_callback_oauth.txt");
+				$GLOBALS['smarty']->display("page_auth_callback_flickr_oauth.txt");
 				exit();
 			}
 		}
@@ -142,7 +142,7 @@
 
 		if (! $user){
 			$GLOBALS['error']['dberr_user'] = 1;
-			$GLOBALS['smarty']->display("page_auth_callback_oauth.txt");
+			$GLOBALS['smarty']->display("page_auth_callback_flickr_oauth.txt");
 			exit();
 		}
 
@@ -155,7 +155,7 @@
 
 		if (! $flickr_user){
 			$GLOBALS['error']['dberr_flickruser'] = 1;
-			$GLOBALS['smarty']->display("page_auth_callback_oauth.txt");
+			$GLOBALS['smarty']->display("page_auth_callback_flickr_oauth.txt");
 			exit();
 		}
 	}

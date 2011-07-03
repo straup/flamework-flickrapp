@@ -29,7 +29,7 @@
 
 	if (! $GLOBALS['cfg']['crypto_oauth_cookie_secret']){
 		$GLOBALS['error']['oauth_missing_secret'] = 1;
-		$GLOBALS['smarty']->display("page_signin_oauth.txt");
+		$GLOBALS['smarty']->display("page_signin_flickr_oauth.txt");
 		exit();
 	}
 
@@ -42,7 +42,7 @@
 
 	if (! $rsp['ok']){
 		$GLOBALS['error']['oauth_request_token'] = 1;
-		$GLOBALS['smarty']->display("page_signin_oauth.txt");
+		$GLOBALS['smarty']->display("page_signin_flickr_oauth.txt");
 		exit();
 	}
 
