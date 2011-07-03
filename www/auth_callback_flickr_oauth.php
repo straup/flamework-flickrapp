@@ -104,8 +104,8 @@
 		if ((! $flickr_user['oauth_token']) || ($flickr_user['oauth_token'] != $keys['user_key'])){
 
 			$update = array(
-				'oauth_token' => $keys['user_key'],
-				'oauth_secret' => $keys['user_secret'],
+				'oauth_token' => $data['oauth_token'],
+				'oauth_secret' => $data['oauth_token_secret'],
 			);
 
 			$rsp = flickr_users_update_user($flickr_user, $update);
@@ -149,8 +149,8 @@
 		$flickr_user = flickr_users_create_user(array(
 			'user_id' => $user['id'],
 			'nsid' => $nsid,
-			'oauth_token' => $keys['user_key'],
-			'oauth_secret' => $keys['user_secret'],
+			'oauth_token' => $data['oauth_token'],
+			'oauth_secret' => $data['oauth_token_secret'],
 		));
 
 		if (! $flickr_user){
