@@ -26,7 +26,7 @@
 
 	if (! $frob){
 		$GLOBALS['error']['missing_frob'] = 1;
-		$GLOBALS['smarty']->display("page_auth_callback_flickrauth.txt");
+		$GLOBALS['smarty']->display("page_auth_callback_flickr_flickrauth.txt");
 		exit();
 	}
 
@@ -50,7 +50,7 @@
 
 	if (! $rsp['ok']){
 		$GLOBALS['error']['missing_token'] = 1;
-		$GLOBALS['smarty']->display("page_auth_callback_flickrauth.txt");
+		$GLOBALS['smarty']->display("page_auth_callback_flickr_flickrauth.txt");
 		exit();
 	}
 
@@ -82,7 +82,7 @@
 
 			if (! $rsp['ok']){
 				$GLOBALS['error']['dberr_flickruser_update'] = 1;
-				$GLOBALS['smarty']->display("page_auth_callback_oauth.txt");
+				$GLOBALS['smarty']->display("page_auth_callback_flickr_flickrauth.txt");
 				exit();
 			}
 		}
@@ -112,7 +112,7 @@
 
 		if (! $user){
 			$GLOBALS['error']['dberr_user'] = 1;
-			$GLOBALS['smarty']->display("page_auth_callback.txt");
+			$GLOBALS['smarty']->display("page_auth_callback_flickr_flickrauth.txt");
 			exit();
 		}
 
@@ -124,7 +124,7 @@
 
 		if (! $flickr_user){
 			$GLOBALS['error']['dberr_flickruser'] = 1;
-			$GLOBALS['smarty']->display("page_auth_callback.txt");
+			$GLOBALS['smarty']->display("page_auth_callback_flickr_flickrauth.txt");
 			exit();
 		}
 	}
