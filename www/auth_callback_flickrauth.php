@@ -26,7 +26,7 @@
 
 	if (! $frob){
 		$GLOBALS['error']['missing_frob'] = 1;
-		$GLOBALS['smarty']->display("page_auth_callback.txt");
+		$GLOBALS['smarty']->display("page_auth_callback_flickrauth.txt");
 		exit();
 	}
 
@@ -50,7 +50,7 @@
 
 	if (! $rsp['ok']){
 		$GLOBALS['error']['missing_token'] = 1;
-		$GLOBALS['smarty']->display("page_auth_callback.txt");
+		$GLOBALS['smarty']->display("page_auth_callback_flickrauth.txt");
 		exit();
 	}
 
@@ -71,6 +71,21 @@
 
 	if ($user_id = $flickr_user['user_id']){
 		$user = users_get_by_id($user_id);
+
+		if ((! $flickr_user['auth_token']) || ($flickr_user['auth_token'] != $token)){
+
+			$update = array(
+				'auth_token' => $token,
+			);
+
+			$rsp = flickr_users_update_user($flickr_user, $update);
+
+			if (! $rsp['ok']){
+				$GLOBALS['error']['dberr_flickruser_update'] = 1;
+				$GLOBALS['smarty']->display("page_auth_callback_oauth.txt");
+				exit();
+			}
+		}
 	}
 
 	# If we don't ensure that new users are allowed to create

@@ -16,6 +16,9 @@ There was a problem creating your account.
 {elseif $error.dberr_flickuser}
 There was a problem creating your account, specifically associating it with your Flickr account.
 
+{elseif $error.dberr_flickuser_update}
+There was a database-related problem updating your Flickr information. Blargh...
+
 {else}
 Ack! The INVISIBLE ERROR CAT hisses at you...
 {/if}
