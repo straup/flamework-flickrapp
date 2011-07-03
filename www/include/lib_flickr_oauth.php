@@ -14,19 +14,11 @@
 
 	#################################################################
 
-	function flickr_oauth_get_request_token($callback_url=''){
+	function flickr_oauth_get_request_token($args=array()){
 
 		$keys = array(
 			'oauth_key' => $GLOBALS['cfg']['flickr_oauth_key'],
 			'oauth_secret' => $GLOBALS['cfg']['flickr_oauth_secret'],
-		);
-
-		if (! $callback_url){
-			$callback_url =  $GLOBALS['cfg']['abs_root_url'] . 'auth/';
-		}
-
-		$args = array(
-			'oauth_callback' => $callback_url
 		);
 
 		$url = $GLOBALS['cfg']['flickr_oauth_endpoint'] . 'request_token/';
