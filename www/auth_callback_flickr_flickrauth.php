@@ -2,7 +2,7 @@
 
 	include("include/init.php");
 
-	loadlib("flickr");
+	loadlib("flickr_api");
 	loadlib("flickr_users");
 	loadlib("random");
 

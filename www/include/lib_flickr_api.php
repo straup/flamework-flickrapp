@@ -13,7 +13,7 @@
 
 	#################################################################
 
-	function flickr_auth_url($perms, $extra=null){
+	function flickr_api_auth_url($perms, $extra=null){
 
 		$args = array(
 			'api_key' => $GLOBALS['cfg']['flickr_api_key'],
