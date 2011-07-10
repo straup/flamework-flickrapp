@@ -77,6 +77,26 @@
 
 	#################################################################
 
+	function flickr_users_get_by_path_alias($alias){
+
+		$cache_key = "flickr_user_alias_{$alias}";
+		$cache = cache_get($cache_key);
+
+		if ($cache['ok']){
+			return $cache['data'];
+		}
+
+		$enc_alias = AddSlashes($alias);
+
+		$sql = "SELECT * FROM FlickrUsers WHERE path_alias='{$enc_alias}'";
+		$user = db_single(db_fetch($sql));
+
+		cache_set($cache_key, $user, "cache locally");
+		return $user;
+	}
+
+	#################################################################
+
 	function flickr_users_get_by_user_id($user_id){
 
 		$cache_key = "flickr_user_{$user_id}";

@@ -3,9 +3,12 @@ DROP TABLE IF EXISTS `FlickrUsers`;
 CREATE TABLE `FlickrUsers` (
   `user_id` int(11) UNSIGNED NOT NULL,
   `nsid` varchar(20) NOT NULL,
+  `path_alias` varchar(255) NOT NULL,
+  `username` varchar(255) NOT NULL,
   `auth_token` char(34) NOT NULL,
   `oauth_token` char(34) NOT NULL,
   `oauth_secret` char(34) NOT NULL,
   PRIMARY KEY (`user_id`),
-  UNIQUE KEY `by_nsid` (`nsid`)
+  UNIQUE KEY `by_nsid` (`nsid`),
+  KEY `by_path_alias` (`path_alias`)
 )  ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
