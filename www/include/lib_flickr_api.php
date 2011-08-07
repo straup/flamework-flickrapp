@@ -50,7 +50,9 @@
 
 		$url = $GLOBALS['cfg']['flickr_api_endpoint'];
 
-		$rsp = http_post($url, $args);
+		$headers = array();
+
+		$rsp = http_post($url, $args, $headers, $more);
 
 		# $url = $url . "?" . http_build_query($args);
 		# $rsp = http_get($url);
