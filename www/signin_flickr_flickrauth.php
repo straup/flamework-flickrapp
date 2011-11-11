@@ -1,7 +1,7 @@
 <?php
 
 	include("include/init.php");
-	loadlib("flickr");
+	loadlib("flickr_api");
 
 	$redir = (get_str('redir')) ? get_str('redir') : '/';
 
@@ -28,7 +28,7 @@
 
 	$perms = $GLOBALS['cfg']['flickr_api_perms'];
 
-	$url = flickr_auth_url($perms, $extra);
+	$url = flickr_api_auth_url($perms, $extra);
 
 	header("location: {$url}");
 	exit();
