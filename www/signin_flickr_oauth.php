@@ -1,7 +1,7 @@
 <?php
 
 	include("include/init.php");
-	loadlib("flickr_oauth");
+	loadlib("flickr_api_oauth");
 
 	$redir = (get_str('redir')) ? get_str('redir') : '/';
 
@@ -38,7 +38,7 @@
 	# credentials. These will be paired with the application's
 	# auth-y bits to sign subsequent requests.
 
-	$rsp = flickr_oauth_get_request_token();
+	$rsp = flickr_api_oauth_get_request_token();
 
 	if (! $rsp['ok']){
 		$GLOBALS['error']['oauth_request_token'] = 1;
@@ -82,7 +82,7 @@
 		$args['extra'] = implode("&", $extra);
 	}
 
-	$url = flickr_oauth_get_auth_url($args, $user_keys);
+	$url = flickr_api_oauth_get_auth_url($args, $user_keys);
 
 	# Okay, now go! (Note the crazy-in-the-head cookie setting.)
 

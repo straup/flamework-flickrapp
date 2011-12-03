@@ -3,7 +3,7 @@
 	include("include/init.php");
 
 	loadlib("flickr_users");
-	loadlib("flickr_oauth");
+	loadlib("flickr_api_oauth");
 	loadlib("random");
 
 	# Some basic sanity checking like are you already logged in?
@@ -72,7 +72,7 @@
 		'oauth_token' => $token,
 	);
 
-	$rsp = flickr_oauth_get_access_token($args, $user_keys);
+	$rsp = flickr_api_oauth_get_access_token($args, $user_keys);
 
 	if (! $rsp['ok']){
 		$GLOBALS['error']['oauth_access_token'] = 1;

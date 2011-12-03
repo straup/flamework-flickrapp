@@ -14,7 +14,7 @@
 
 	#################################################################
 
-	function flickr_oauth_get_request_token($args=array()){
+	function flickr_api_oauth_get_request_token($args=array()){
 
 		$keys = array(
 			'oauth_key' => $GLOBALS['cfg']['flickr_oauth_key'],
@@ -30,7 +30,7 @@
 			return $rsp;
 		}
 
-		$data = flickr_oauth_rsp_to_hash($rsp['body']);
+		$data = flickr_api_oauth_rsp_to_hash($rsp['body']);
 
 		return array(
 			'ok' => 1,
@@ -40,7 +40,7 @@
 
 	#################################################################
 
-	function flickr_oauth_get_auth_url(&$args, &$user_keys){
+	function flickr_api_oauth_get_auth_url(&$args, &$user_keys){
 
 		$keys = array(
 			'oauth_key' => $GLOBALS['cfg']['flickr_oauth_key'],
@@ -57,7 +57,7 @@
 
 	#################################################################
 
-	function flickr_oauth_get_access_token(&$args, &$user_keys){
+	function flickr_api_oauth_get_access_token(&$args, &$user_keys){
 
 		$keys = array(
 			'oauth_key' => $GLOBALS['cfg']['flickr_oauth_key'],
@@ -75,7 +75,7 @@
 			return $rsp;
 		}
 
-		$data = flickr_oauth_rsp_to_hash($rsp['body']);
+		$data = flickr_api_oauth_rsp_to_hash($rsp['body']);
 
 		return array(
 			'ok' => 1,
@@ -85,7 +85,7 @@
 
 	#################################################################
 
-	function flickr_oauth_api_call($method, $args, $more=array()){
+	function flickr_api_oauth_call($method, $args, $more=array()){
 
 		$keys = array(
 			'oauth_key' => $GLOBALS['cfg']['flickr_oauth_key'],
@@ -130,7 +130,7 @@
 
 	#################################################################
 
-	function flickr_oauth_rsp_to_hash($rsp){
+	function flickr_api_oauth_rsp_to_hash($rsp){
 
 		$data = array();
 

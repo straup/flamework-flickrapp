@@ -35,7 +35,7 @@
 
 	#################################################################
 
-	function flickr_api_call($method, $args=array(), $more=array()){
+	function flickr_api_call_build($method, $args=array(), $more=array()){
 
 		$args['api_key'] = $GLOBALS['cfg']['flickr_api_key'];
 
@@ -49,6 +49,19 @@
 		}
 
 		$url = $GLOBALS['cfg']['flickr_api_endpoint'];
+
+		return array($url, $args);
+	}
+
+	#################################################################
+
+	function flickr_api_call($method, $args=array(), $more=array()){
+
+		list($url, $args) = flickr_api_call_build($method, $args, $more);
+
+		$more = array(
+			'http_timeout' => 10,
+		);
 
 		$headers = array();
 
