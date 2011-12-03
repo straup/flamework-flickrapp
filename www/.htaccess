@@ -1,0 +1,7 @@
+# Flickr login stuff
+
+RewriteRule  ^auth/$			/auth_callback_flickr_flickrauth.php?%{QUERY_STRING}	[L]
+RewriteRule  ^signin/$			/signin_flickr_flickrauth.php?%{QUERY_STRING}		[L]
+
+# RewriteRule  ^auth/$			/auth_callback_flickr_oauth.php?%{QUERY_STRING}	[L]
+# RewriteRule  ^signin/$		/signin_flickr_oauth.php?%{QUERY_STRING}		[L]
