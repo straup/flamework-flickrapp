@@ -146,6 +146,8 @@
 			exit();
 		}
 
+		# TO DO: get path_alias
+
 		$flickr_user = flickr_users_create_user(array(
 			'user_id' => $user['id'],
 			'nsid' => $nsid,

@@ -70,6 +70,7 @@
 	$flickr_user = flickr_users_get_by_nsid($nsid);
 
 	if ($user_id = $flickr_user['user_id']){
+
 		$user = users_get_by_id($user_id);
 
 		if ((! $flickr_user['auth_token']) || ($flickr_user['auth_token'] != $token)){
@@ -116,9 +117,23 @@
 			exit();
 		}
 
+		#
+
+		$method = 'flickr.people.getInfo';
+
+		$args = array(
+			'user_id' => $nsid,
+		);
+
+		$rsp = flickr_api_call($method, $args);
+		$path_alias = ($rsp['ok']) ? $rsp['rsp']['person']['path_alias'] : '';
+
+		#
+
 		$flickr_user = flickr_users_create_user(array(
 			'user_id' => $user['id'],
 			'nsid' => $nsid,
+			'path_alias' => $path_alias,
 			'auth_token' => $token,
 		));
 
