@@ -4,10 +4,6 @@
 	loadlib("flickr_api");
 	loadlib("flickr_users");
 
-	# If all you want is to get a token for a user or to change the perms
-	# on an existing token, use this. If you want to use Flickr as a SSO
-	# provider use signin_flickr_(flickrauth|oauth).php
-
 	login_ensure_loggedin($_SERVER['REQUEST_URI']);
 
 	$flickr_user = flickr_users_get_by_user_id($GLOBALS['cfg']['user']['id']);

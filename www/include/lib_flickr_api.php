@@ -9,6 +9,7 @@
 	#################################################################
 
 	$GLOBALS['cfg']['flickr_api_endpoint'] = 'http://api.flickr.com/services/rest/';
+	$GLOBALS['cfg']['flickr_upload_endpoint'] = 'http://api.flickr.com/services/upload/';
 	$GLOBALS['cfg']['flickr_auth_endpoint'] = 'http://api.flickr.com/services/auth/';
 
 	#################################################################
@@ -104,11 +105,62 @@
 		}
 
 		if ($json['stat'] != 'ok'){
-			return array( 'ok' => 0, 'error' => $json['message']);
+			return array( 'ok' => 0, 'error' => $json['message'], 'error_code' => $json['code']);
 		}
 
 		unset($json['stat']);
 		return array( 'ok' => 1, 'rsp' => $json );
+	}
+
+	#################################################################
+
+	function flickr_api_upload($file, $args, $more=array()){
+
+		$args['api_key'] = $GLOBALS['cfg']['flickr_api_key'];
+
+		# did we really never add json output for uploads?
+		# why did we do that... (20120208/straup)
+		#
+		# $args['format'] = 'json';
+		# $args['nojsoncallback'] = 1;
+
+		$sig = _flickr_api_sign_args($args);
+
+		$args['api_sig'] = $sig;
+		$args['photo'] = "@{$file}";
+
+		$defaults = array(
+			'http_timeout' => 10,
+		);
+
+		$more = array_merge($defaults, $more);
+		$headers = array();
+
+		$url = $GLOBALS['cfg']['flickr_upload_endpoint'];
+
+		$rsp = http_post($url, $args, $headers, $more);
+
+		if (! $rsp['ok']){
+			return $rsp;
+		}
+
+		# sigh... see above
+
+		if ((isset($args['async'])) && ($args['async'])){
+
+			if (preg_match("/<ticketid>(\d+-\d+)<\/ticketid>/m", $rsp['body'], $m)){
+				return okay(array("ticket_id" => $m[1]));
+			}
+		}
+
+		else {
+
+			if (preg_match("/<photoid>(\d+)<\/photoid>/m", $rsp['body'], $m)){
+				return okay(array("photo_id" => $m[1]));
+			}
+		}
+
+		return not_okay("failed to parse response '{$rsp['body']}'");
 	}
 
 	#################################################################
