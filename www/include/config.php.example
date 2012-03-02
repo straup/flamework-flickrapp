@@ -1,0 +1,9 @@
+<?php
+
+	# http://www.flickr.com/services/api
+
+	$GLOBALS['cfg']['flickr_api_key'] = '';
+	$GLOBALS['cfg']['flickr_api_secret'] = '';
+	$GLOBALS['cfg']['flickr_api_perms'] = 'read';
+
+?>

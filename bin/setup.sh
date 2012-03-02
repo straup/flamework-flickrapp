@@ -29,4 +29,12 @@ echo ""
 
 # TO DO: config.php settings
 
+echo "Things you'll need to add to your config.php file:"
+echo ""
+
+cat ${FLICKRAPP}/www/include/config.php.example
+
+echo "--------------------------------------------"
+echo ""
+
 # TO DO: .htaccess configs
