@@ -38,3 +38,11 @@ echo "--------------------------------------------"
 echo ""
 
 # TO DO: .htaccess configs
+
+echo "Things you'll need to add to your .htaccess file:"
+echo ""
+
+cat ${FLICKRAPP}/www/.htaccess
+
+echo "--------------------------------------------"
+echo ""
